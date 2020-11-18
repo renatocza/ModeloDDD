@@ -1,2 +1,2 @@
-# ModeloDDD
-Modelo DDD Básico (Sem IOC/DI)
+# DDD Model
+Basic DDD model with IOC/Dependency Injection

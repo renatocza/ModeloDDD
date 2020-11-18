@@ -11,11 +11,15 @@ namespace App.Domain.Interfaces
 
         void Update(T obj);
 
-        void Delete(int id);
+        void Delete(Guid id);
 
-        T Select(int id);
+        T Select(Guid id);
 
-        IList<T> Select();
+        T Single(Func<T, bool> p);
+
+        IEnumerable<T> Select();
+
+        IEnumerable<T> Select(Func<T, bool> p);
     }
 }
 

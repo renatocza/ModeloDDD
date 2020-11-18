@@ -51,7 +51,7 @@ namespace Aplication.Application.Controllers
             }
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace Aplication.Application.Controllers
             }
         }
 
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
             try
             {

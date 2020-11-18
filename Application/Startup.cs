@@ -27,12 +27,12 @@ namespace Application
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<MsSqlContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            ////MySqlConnection
-            //services.AddDbContext<MySqlContext>(options => options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddDbContext<MsSqlContext>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies();
+            });
             services.AddControllersWithViews();
+            services.AddControllers();
             services.AddMvc();
 
             services.AddSwaggerGen(c =>

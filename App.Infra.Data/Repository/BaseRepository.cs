@@ -10,7 +10,12 @@ namespace App.Infra.Data.Repository
 {
     public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     {
-        private MySqlContext context = new MySqlContext();
+        private MsSqlContext context;
+
+        public BaseRepository(MsSqlContext context)
+        {
+            this.context = context;
+        }
 
         public void Insert(T obj)
         {
@@ -24,20 +29,31 @@ namespace App.Infra.Data.Repository
             context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             context.Set<T>().Remove(Select(id));
             context.SaveChanges();
         }
 
-        public IList<T> Select()
+        public IEnumerable<T> Select()
         {
             return context.Set<T>().ToList();
         }
 
-        public T Select(int id)
+        public T Select(Guid id)
         {
-            return context.Set<T>().Find(id);
+            return context.Set<T>().FirstOrDefault(x=>x.Id == id);
         }
+
+        public T Single(Func<T, bool> p)
+        {
+            return context.Set<T>().FirstOrDefault(p);
+        }
+        public IEnumerable<T> Select(Func<T, bool> p)
+        {
+            return context.Set<T>().Where(p);
+        }
+
+        
     }
 }

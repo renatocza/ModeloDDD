@@ -5,12 +5,19 @@ using App.Infra.Data.Repository;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using App.Infra.Data.Context;
+using System.Linq;
 
 namespace App.Service.Services
 {
     public class BaseService<T> : IService<T> where T : BaseEntity
     {
-        private BaseRepository<T> repository = new BaseRepository<T>();
+        private BaseRepository<T> repository;
+
+        public BaseService(MsSqlContext context)
+        {
+            repository = new BaseRepository<T>(context);
+        }
 
         public T Post<V>(T obj) where V : AbstractValidator<T>
         {
@@ -28,20 +35,23 @@ namespace App.Service.Services
             return obj;
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
-            if (id == 0)
-                throw new ArgumentException("The id can't be zero.");
+            if (id == Guid.Empty)
+                throw new ArgumentException("The id can't be empty.");
 
             repository.Delete(id);
         }
 
-        public IList<T> Get() => repository.Select();
-
-        public T Get(int id)
+        public IList<T> Get()
         {
-            if (id == 0)
-                throw new ArgumentException("The id can't be zero.");
+            return repository.Select().ToList();
+        }
+
+        public T Get(Guid id)
+        {
+            if (id == Guid.Empty)
+                throw new ArgumentException("The id can't be empty.");
 
             return repository.Select(id);
         }
@@ -49,9 +59,19 @@ namespace App.Service.Services
         private void Validate(T obj, AbstractValidator<T> validator)
         {
             if (obj == null)
-                throw new Exception("Registros não detectados!");
+                throw new Exception("No data found!");
 
             validator.ValidateAndThrow(obj);
+        }
+
+        public T Single(Func<T, bool> p)
+        {
+            return repository.Single(p);
+        }
+
+        public IEnumerable<T> Get(Func<T, bool> p)
+        {
+            throw new NotImplementedException();
         }
     }
 }
